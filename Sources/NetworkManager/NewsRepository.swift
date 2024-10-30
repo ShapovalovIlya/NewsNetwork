@@ -9,6 +9,9 @@ import Foundation
 
 public let DefaultApiKey = "6b77ceed56dc45b8b67542940b8a3409"
 
+/// Сущность для взаимодействия с NewsApi.
+///
+/// Для корректной работы, после загрузки приложения нужно вызвать метод `register(apiKey: String)`
 public final class NewsRepository: @unchecked Sendable {
     public static let shared = NewsRepository()
     
