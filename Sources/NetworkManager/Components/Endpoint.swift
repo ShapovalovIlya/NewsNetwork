@@ -9,10 +9,6 @@ import Foundation
 import Monad
 import SwiftFP
 
-public enum Category: String, CaseIterable, Sendable {
-    case business, entertainment, general, health, science, sports, technology
-}
-
 typealias Endpoint = Monad<URLComponents>
 
 extension Endpoint {

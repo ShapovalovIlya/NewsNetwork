@@ -9,25 +9,25 @@ import Foundation
 import SwiftFP
 import CoreImage
 
-final class NetworkManager: Sendable {
+actor NetworkManager {
     public typealias NetworkTask = @Sendable (URLRequest) async throws -> (Data, URLResponse)
-    public typealias Keygen = @Sendable () -> String
     
-    let apiKey: Keygen
-    let decoder = JSONDecoder()
-    let fetcher: NetworkTask
+    private var apiKey: String?
+    private let decoder: JSONDecoder
+    private let fetcher: NetworkTask
     
     //MARK: - init(_:)
-    private init(
-        fetcher: @escaping NetworkTask = URLSession.shared.data,
-        apiKey: @escaping Keygen
-    ) {
+    init(fetcher: @escaping NetworkTask = URLSession.shared.data) {
         self.fetcher = fetcher
-        self.apiKey = apiKey
-        decoder.dateDecodingStrategy = .iso8601
+        self.decoder = JSONDecoder()
+        self.decoder.dateDecodingStrategy = .iso8601
     }
     
     //MARK: - Public methods
+    func register(key: String) async {
+        self.apiKey = key
+    }
+    
     func search(_ query: String, page: Int, size: Int) async -> Result<[Article], NewsError> {
         await perform(.search(query, page: page, size: size))
             .map(\.articles)
@@ -52,15 +52,19 @@ private extension NetworkManager {
         return response.data
     }
     
+    func injectApi(key: String?) -> (Request) throws -> Request {
+        { request in
+            guard let key else { throw NewsError.apiKeyMissing }
+            return request.addHeader(key, field: "X-Api-Key")
+        }
+    }
+    
     func perform(_ endpoint: Endpoint) async -> Result<ResponseModel, NewsError> {
         await endpoint
             .reduceToUrl(NewsError.badUrl)
             .map(Request.new)
-            .map { request in
-                request
-                    .method(.get)
-                    .addHeader(apiKey(), field: "X-Api-Key")
-            }
+            .map { $0.method(.get) }
+            .tryMap(injectApi(key: apiKey))
             .map(\.wrapped)
             .asyncTryMap(fetcher)
             .tryMap(unwrap(response:))

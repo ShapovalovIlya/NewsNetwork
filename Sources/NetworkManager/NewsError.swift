@@ -16,6 +16,7 @@ public enum NewsError: Error {
     case noData
     case decodingError(Error)
     case badUrl(_ components: URLComponents)
+    case apiKeyMissing
     case unknown(Error)
     
     init?(statusCode: Int) {
