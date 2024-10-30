@@ -33,7 +33,7 @@ final class NetworkManager: Sendable {
             .map(\.articles)
     }
     
-    func getPopular(for category: Category, page: Int, size: Int) async -> Result<[Article], NewsError> {
+    func getPopular(_ category: Category, page: Int, size: Int) async -> Result<[Article], NewsError> {
         await perform(.popular(category))
             .map(\.articles)
     }
