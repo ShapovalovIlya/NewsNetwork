@@ -69,17 +69,17 @@ public final class NewsRepository: @unchecked Sendable {
     }
     
     @discardableResult
-    public func save(articles: Article...) -> Result<[Article], NewsError> {
+    public func save(articles: Article...) async -> Result<[Article], NewsError> {
         .failure(.noData)
     }
     
     @discardableResult
-    public func delete(articles: Article...) -> Result<[Article], NewsError> {
+    public func delete(articles: Article...) async -> Result<[Article], NewsError> {
         .failure(.noData)
     }
     
     @discardableResult
-    public func loadArticles() -> Result<[Article], NewsError> {
+    public func loadArticles() async -> Result<[Article], NewsError> {
         .failure(.noData)
     }
 }
