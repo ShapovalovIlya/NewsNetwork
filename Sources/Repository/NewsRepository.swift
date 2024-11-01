@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import NetworkManager
+
+import Models
 
 public let DefaultApiKey = "6b77ceed56dc45b8b67542940b8a3409"
 
@@ -57,8 +60,22 @@ public final class NewsRepository: @unchecked Sendable {
     ///   - page: Страница списка новостей
     ///   - size: Размер (кол-во объектов) в одной странице
     /// - Returns: Список новостей или ошибка, возникшая в процессе запроса.
-    public func getPopular(_ category: Category, page: Int = 1, size: Int = 100) async -> Result<[Article], NewsError> {
+    public func getPopular(
+        _ category: Models.Category,
+        page: Int = 1,
+        size: Int = 100
+    ) async -> Result<[Article], NewsError> {
         await network.getPopular(category, page: page, size: size)
+    }
+    
+    @discardableResult
+    public func save(articles: Article...) -> Result<[Article], NewsError> {
+        .failure(.noData)
+    }
+    
+    @discardableResult
+    public func delete(articles: Article...) -> Result<[Article], NewsError> {
+        .failure(.noData)
     }
 }
 

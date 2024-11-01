@@ -11,23 +11,36 @@ let package = Package(
     ],
     products: [
         .library(name: "NewsNetwork", targets: ["Repository"]),
-        
+        .library(name: "Models", targets: ["Models"]),
+        .library(name: "NetworkManager", targets: ["NetworkManager"]),
+        .library(name: "PersistenceManager", targets: ["PersistenceManager"])
     ],
     dependencies: [
         .package(url: "https://github.com/ShapovalovIlya/SwiftFP.git", branch: "main")
     ],
     targets: [
+        .target(name: "Models"),
         .target(
-            name: "Repository",
+            name: "PersistenceManager",
             dependencies: [
-                .product(name: "SwiftFP", package: "SwiftFP")
+                .product(name: "SwiftFP", package: "SwiftFP"),
+            ],
+            resources: [
+                .process("Resources")
             ]
         ),
-        .testTarget(
-            name: "NewsNetworkTests",
-            dependencies: [
-                "Repository"
-            ]
-        )
+        .target(name: "NetworkManager", dependencies: [
+            .product(name: "SwiftFP", package: "SwiftFP"),
+            "Models"
+        ]),
+        .target(name: "Repository", dependencies: [
+            .product(name: "SwiftFP", package: "SwiftFP"),
+            "Models",
+            "NetworkManager",
+            "PersistenceManager"
+        ]),
+        .testTarget(name: "NewsNetworkTests", dependencies: [
+            "Repository"
+        ])
     ]
 )

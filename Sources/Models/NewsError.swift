@@ -19,7 +19,7 @@ public enum NewsError: Error {
     case apiKeyMissing
     case unknown(Error)
     
-    init?(statusCode: Int) {
+    public init?(statusCode: Int) {
         switch statusCode {
         case 400: self = .badRequest
         case 401: self = .unauthorized
@@ -29,7 +29,7 @@ public enum NewsError: Error {
         }
     }
     
-    static func map(_ error: Error) -> NewsError {
+    public static func map(_ error: Error) -> NewsError {
         error as? NewsError ?? .unknown(error)
     }
     

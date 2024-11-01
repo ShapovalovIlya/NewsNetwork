@@ -7,9 +7,9 @@
 
 import Foundation
 import SwiftFP
-import CoreImage
+import Models
 
-actor NetworkManager {
+public actor NetworkManager {
     public typealias NetworkTask = @Sendable (URLRequest) async throws -> (Data, URLResponse)
     
     private var apiKey: String?
@@ -17,23 +17,23 @@ actor NetworkManager {
     private let fetcher: NetworkTask
     
     //MARK: - init(_:)
-    init(fetcher: @escaping NetworkTask = URLSession.shared.data) {
+    public init(fetcher: @escaping NetworkTask = URLSession.shared.data) {
         self.fetcher = fetcher
         self.decoder = JSONDecoder()
         self.decoder.dateDecodingStrategy = .iso8601
     }
     
     //MARK: - Public methods
-    func register(key: String) async {
+    public func register(key: String) async {
         self.apiKey = key
     }
     
-    func search(_ query: String, page: Int, size: Int) async -> Result<[Article], NewsError> {
+    public func search(_ query: String, page: Int, size: Int) async -> Result<[Article], NewsError> {
         await perform(.search(query, page: page, size: size))
             .map(\.articles)
     }
     
-    func getPopular(_ category: Category, page: Int, size: Int) async -> Result<[Article], NewsError> {
+    public func getPopular(_ category: Models.Category, page: Int, size: Int) async -> Result<[Article], NewsError> {
         await perform(.popular(category))
             .map(\.articles)
     }

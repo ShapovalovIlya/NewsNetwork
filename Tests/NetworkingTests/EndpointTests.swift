@@ -7,7 +7,8 @@
 
 import Foundation
 import Testing
-@testable import Repository
+import Models
+@testable import NetworkManager
 
 struct EndpointTests {
     @Test func base() async throws {
@@ -26,8 +27,8 @@ struct EndpointTests {
         #expect(sut.absoluteString == "https://newsapi.org/v2/top-headlines")
     }
     
-    @Test(arguments: Repository.Category.allCases)
-    func popular(category: Repository.Category) async throws {
+    @Test(arguments: Models.Category.allCases)
+    func popular(category: Models.Category) async throws {
         let sut = try Endpoint
             .popular(category)
             .reduceToUrl()

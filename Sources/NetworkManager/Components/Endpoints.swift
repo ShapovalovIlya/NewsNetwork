@@ -7,6 +7,7 @@
 
 import Foundation
 import Monad
+import Models
 
 // api-key: 6b77ceed56dc45b8b67542940b8a3409
 
@@ -19,7 +20,7 @@ extension Endpoint {
     }
     
     @inlinable
-    func category(_ c: Category) -> Self {
+    func category(_ c: Models.Category) -> Self {
         self.addQuery(URLQueryItem(name: "category", value: c.rawValue))
     }
     
@@ -44,7 +45,7 @@ extension Endpoint {
     static let everything: Self = Endpoint.new().addPath("everything")
     static let topHeadlines: Self = Endpoint.new().addPath("top-headlines")
     
-    static func popular(_ category: Category) -> Self {
+    static func popular(_ category: Models.Category) -> Self {
         Endpoint
             .topHeadlines
             .category(category)
