@@ -7,7 +7,7 @@
 
 import Foundation
 import NetworkManager
-
+import PersistenceManager
 import Models
 
 public let DefaultApiKey = "6b77ceed56dc45b8b67542940b8a3409"
@@ -75,6 +75,11 @@ public final class NewsRepository: @unchecked Sendable {
     
     @discardableResult
     public func delete(articles: Article...) -> Result<[Article], NewsError> {
+        .failure(.noData)
+    }
+    
+    @discardableResult
+    public func loadArticles() -> Result<[Article], NewsError> {
         .failure(.noData)
     }
 }
