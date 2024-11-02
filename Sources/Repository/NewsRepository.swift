@@ -69,6 +69,9 @@ public final class NewsRepository: @unchecked Sendable {
         await network.getPopular(category, page: page, size: size)
     }
     
+    /// Сохранить в БД выбранные объекты
+    /// - Parameter articles: экземпляр или коллекция объектов
+    /// - Returns: коллекция сохраненных объектов, либо ошибка, возникшая в процессе
     @discardableResult
     public func save(articles: Article...) async -> Result<[Article], NewsError> {
         await persistence.write { context in
@@ -78,6 +81,9 @@ public final class NewsRepository: @unchecked Sendable {
         .mapError(NewsError.map)
     }
     
+    /// Удалить из БД выбранные объекты
+    /// - Parameter articles: экземпляр или коллекция объектов
+    /// - Returns: коллекция удаленных объектов, либо ошибка, возникшая в процессе
     @discardableResult
     public func delete(articles: Article...) async -> Result<[Article], NewsError> {
         await persistence.write { context in
@@ -91,6 +97,8 @@ public final class NewsRepository: @unchecked Sendable {
         .mapError(NewsError.map)
     }
     
+    /// Получить из БД все сохраненные объекты
+    /// - Returns: коллекция объектов, либо ошибка, возникшая в процессе
     @discardableResult
     public func loadArticles() async -> Result<[Article], NewsError> {
         await persistence.fetch().tryMap { entities in
