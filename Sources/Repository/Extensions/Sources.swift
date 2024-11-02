@@ -10,4 +10,27 @@ import Models
 import CoreData
 import PersistenceManager
 
+extension SourceEntity {
+    @inlinable func copy(_ source: Source) {
+        self.id = source.id
+        self.name = source.name
+    }
+    
+    @inlinable
+    static func map(_ context: NSManagedObjectContext) -> (Source) -> SourceEntity {
+        { source in
+            let entity = SourceEntity(context: context)
+            entity.copy(source)
+            return entity
+        }
+    }
+}
 
+extension Source {
+    init(_ obj: SourceEntity) throws {
+        guard let id = obj.id, let name = obj.name else {
+            throw NewsError.persistenceError("Property missing. Obj: \(SourceEntity.className())")
+        }
+        self.init(id: id, name: name)
+    }
+}

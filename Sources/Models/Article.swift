@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Article: Decodable, Sendable {
+public struct Article: Decodable, Sendable, Hashable {
     
     /// The identifier id and a display name name for the source this article came from.
     public let source: Source
@@ -32,4 +32,24 @@ public struct Article: Decodable, Sendable {
     
     /// The unformatted content of the article, where available. This is truncated to 200 chars.
     public let content: String
+    
+    public init(
+        source: Source,
+        author: String,
+        title: String,
+        description: String,
+        url: URL,
+        urlToImage: URL,
+        publishedAt: Date,
+        content: String
+    ) {
+        self.source = source
+        self.author = author
+        self.title = title
+        self.description = description
+        self.url = url
+        self.urlToImage = urlToImage
+        self.publishedAt = publishedAt
+        self.content = content
+    }
 }

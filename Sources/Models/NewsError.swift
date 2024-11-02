@@ -18,6 +18,7 @@ public enum NewsError: Error {
     case badUrl(_ components: URLComponents)
     case apiKeyMissing
     case unknown(Error)
+    case persistenceError(String)
     
     public init?(statusCode: Int) {
         switch statusCode {

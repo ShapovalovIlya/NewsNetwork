@@ -71,17 +71,32 @@ public final class NewsRepository: @unchecked Sendable {
     
     @discardableResult
     public func save(articles: Article...) async -> Result<[Article], NewsError> {
-        .failure(.noData)
+        await persistence.write { context in
+            _ = articles.map(ArticleEntity.map(context))
+        }
+        .map { articles }
+        .mapError(NewsError.map)
     }
     
     @discardableResult
     public func delete(articles: Article...) async -> Result<[Article], NewsError> {
-        .failure(.noData)
+        await persistence.write { context in
+            let request = ArticleEntity.fetchRequest()
+            request.predicate = NSPredicate(format: "url IN %@", articles.map(\.url))
+            let result = try context.fetch(request)
+            result.forEach(context.delete)
+            let deleted = result.compactMap(\.url)
+            return articles.filter { deleted.contains($0.url) }
+        }
+        .mapError(NewsError.map)
     }
     
     @discardableResult
     public func loadArticles() async -> Result<[Article], NewsError> {
-        .failure(.noData)
+        await persistence.fetch().tryMap { entities in
+            try entities.map(Article.init)
+        }
+        .mapError(NewsError.map)
     }
 }
 

@@ -32,15 +32,18 @@ struct CoreDataRepository<Entity: NSManagedObject> {
     }
     
     @inlinable
-    func write(
-        _ body: @escaping (NSManagedObjectContext) -> Void = { _ in }
-    ) async -> Result<Void, Error> {
+    func write<R>(
+        _ body: @escaping (NSManagedObjectContext) throws -> R = { _ in }
+    ) async -> Result<R, Error> {
         await Result {
             try await context.perform {
-                body(context)
+                let result = try body(context)
+                guard context.hasChanges else { return result }
                 try context.save()
+                return result
             }
         }
+        .mapError { context.rollback(); return $0 }
     }
     
     @inlinable

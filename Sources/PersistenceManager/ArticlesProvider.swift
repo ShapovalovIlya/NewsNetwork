@@ -39,6 +39,12 @@ public final class ArticlesProvider {
         await repository.write().map { articles }
     }
     
+    public func write<R>(
+        _ body: @escaping (NSManagedObjectContext) throws -> R
+    ) async -> Result<R, Error> {
+        await repository.write(body)
+    }
+    
     public func delete(
         _ entities: [ArticleEntity]
     ) async -> Result<[ArticleEntity], Error> {
