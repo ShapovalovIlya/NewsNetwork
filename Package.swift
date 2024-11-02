@@ -14,9 +14,6 @@ let package = Package(
             "Repository",
             "Models"
         ]),
-        .library(name: "Models", targets: ["Models"]),
-        .library(name: "NetworkManager", targets: ["NetworkManager"]),
-        .library(name: "PersistenceManager", targets: ["PersistenceManager"])
     ],
     dependencies: [
         .package(url: "https://github.com/ShapovalovIlya/SwiftFP.git", branch: "main")
