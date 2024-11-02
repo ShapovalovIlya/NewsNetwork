@@ -7,8 +7,8 @@
 
 import Foundation
 import Testing
-import Models
 @testable import NetworkManager
+import Models
 
 struct EndpointTests {
     @Test func base() async throws {

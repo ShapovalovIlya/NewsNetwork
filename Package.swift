@@ -10,7 +10,10 @@ let package = Package(
         .macOS(.v12)
     ],
     products: [
-        .library(name: "NewsNetwork", targets: ["Repository"]),
+        .library(name: "NewsNetwork", targets: [
+            "Repository",
+            "Models"
+        ]),
         .library(name: "Models", targets: ["Models"]),
         .library(name: "NetworkManager", targets: ["NetworkManager"]),
         .library(name: "PersistenceManager", targets: ["PersistenceManager"])

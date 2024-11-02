@@ -8,7 +8,7 @@
 import Foundation
 import NetworkManager
 import PersistenceManager
-import Models
+public import Models
 
 public let DefaultApiKey = "6b77ceed56dc45b8b67542940b8a3409"
 
