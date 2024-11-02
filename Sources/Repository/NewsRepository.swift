@@ -20,6 +20,7 @@ public final class NewsRepository: @unchecked Sendable {
     
     private let lock = NSRecursiveLock()
     private let network = NetworkManager()
+    private let persistence = ArticlesProvider()
     
     private init() {}
     
