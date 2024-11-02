@@ -45,7 +45,7 @@ extension Article {
             let publishedAt = obj.publishedAt,
             let content = obj.content
         else {
-            throw NewsError.persistenceError("Property missing. Obj: \(ArticleEntity.className())")
+            throw NewsError.persistenceError("Property missing. Obj: \(obj)")
         }
         self.init(
             source: try Source(entity),
