@@ -6,7 +6,7 @@
 //
 
 
-public struct Source: Decodable, Sendable, Hashable {
+public struct Source: Codable, Sendable, Hashable {
     public let id: String
     public let name: String
     

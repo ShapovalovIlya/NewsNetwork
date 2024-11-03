@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct Article: Decodable, Sendable, Hashable {
+public struct Article: Codable, Sendable, Hashable {
     
     /// The identifier id and a display name name for the source this article came from.
     public let source: Source

@@ -14,7 +14,7 @@ public enum NewsError: Error {
     case tooManyRequests
     case serverError
     case noData
-    case decodingError(Error)
+    case decodingError(DecodingError)
     case badUrl(_ components: URLComponents)
     case apiKeyMissing
     case unknown(Error)
@@ -31,7 +31,16 @@ public enum NewsError: Error {
     }
     
     public static func map(_ error: Error) -> NewsError {
-        error as? NewsError ?? .unknown(error)
+        switch error {
+        case let newsError as NewsError:
+            return newsError
+            
+        case let decoding as DecodingError:
+            return .decodingError(decoding)
+            
+        default:
+            return .unknown(error)
+        }
     }
     
 }
