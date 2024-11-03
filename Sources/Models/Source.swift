@@ -7,7 +7,7 @@
 
 
 public struct Source: Codable, Sendable, Hashable {
-    public let id: String
+    public let id: String?
     public let name: String
     
     public init(id: String, name: String) {
