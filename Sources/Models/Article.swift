@@ -31,7 +31,7 @@ public struct Article: Codable, Sendable, Hashable {
     public let publishedAt: Date
     
     /// The unformatted content of the article, where available. This is truncated to 200 chars.
-    public let content: String
+    public let content: String?
     
     public init(
         source: Source,
