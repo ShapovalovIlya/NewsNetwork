@@ -13,7 +13,7 @@ public struct Article: Codable, Sendable, Hashable {
     public let source: Source
     
     /// The author of the article
-    public let author: String
+    public let author: String?
     
     /// The headline or title of the article.
     public let title: String
@@ -35,7 +35,7 @@ public struct Article: Codable, Sendable, Hashable {
     
     public init(
         source: Source,
-        author: String,
+        author: String?,
         title: String,
         description: String?,
         url: URL,

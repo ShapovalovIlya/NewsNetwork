@@ -37,7 +37,6 @@ extension Article {
     init(_ obj: ArticleEntity) throws {
         guard
             let entity = obj.sourceEntity,
-            let author = obj.author,
             let title = obj.title,
             let url = obj.url,
             let publishedAt = obj.publishedAt
@@ -46,7 +45,7 @@ extension Article {
         }
         self.init(
             source: try Source(entity),
-            author: author,
+            author: obj.author,
             title: title,
             description: obj.snippet,
             url: url,
