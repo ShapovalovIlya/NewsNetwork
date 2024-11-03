@@ -19,7 +19,7 @@ public struct Article: Codable, Sendable, Hashable {
     public let title: String
     
     /// A description or snippet from the article.
-    public let description: String
+    public let description: String?
     
     /// The direct URL to the article.
     public let url: URL
@@ -37,11 +37,11 @@ public struct Article: Codable, Sendable, Hashable {
         source: Source,
         author: String,
         title: String,
-        description: String,
+        description: String?,
         url: URL,
         urlToImage: URL,
         publishedAt: Date,
-        content: String
+        content: String?
     ) {
         self.source = source
         self.author = author

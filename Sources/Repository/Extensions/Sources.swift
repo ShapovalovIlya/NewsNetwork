@@ -28,9 +28,9 @@ extension SourceEntity {
 
 extension Source {
     init(_ obj: SourceEntity) throws {
-        guard let id = obj.id, let name = obj.name else {
+        guard let name = obj.name else {
             throw NewsError.persistenceError("Property missing. Obj: \(obj)")
         }
-        self.init(id: id, name: name)
+        self.init(id: obj.id, name: name)
     }
 }

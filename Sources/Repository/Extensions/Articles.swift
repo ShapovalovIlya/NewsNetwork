@@ -39,11 +39,9 @@ extension Article {
             let entity = obj.sourceEntity,
             let author = obj.author,
             let title = obj.title,
-            let description = obj.snippet,
             let url = obj.url,
             let urlToImage = obj.urlToImage,
-            let publishedAt = obj.publishedAt,
-            let content = obj.content
+            let publishedAt = obj.publishedAt
         else {
             throw NewsError.persistenceError("Property missing. Obj: \(obj)")
         }
@@ -51,11 +49,11 @@ extension Article {
             source: try Source(entity),
             author: author,
             title: title,
-            description: description,
+            description: obj.snippet,
             url: url,
             urlToImage: urlToImage,
             publishedAt: publishedAt,
-            content: content
+            content: obj.content
         )
     }
     
