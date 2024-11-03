@@ -13,7 +13,7 @@ public struct ResponseModel: Decodable {
     /// The total number of results available for your request.
     /// Only a limited number are shown at a time though,
     /// so use the page parameter in your requests to page through them.
-    public let totalResult: Int
+    public let totalResults: Int
     
     /// The results of the request.
     public let articles: [Article]
