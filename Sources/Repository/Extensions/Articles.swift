@@ -40,7 +40,6 @@ extension Article {
             let author = obj.author,
             let title = obj.title,
             let url = obj.url,
-            let urlToImage = obj.urlToImage,
             let publishedAt = obj.publishedAt
         else {
             throw NewsError.persistenceError("Property missing. Obj: \(obj)")
@@ -51,7 +50,7 @@ extension Article {
             title: title,
             description: obj.snippet,
             url: url,
-            urlToImage: urlToImage,
+            urlToImage: obj.urlToImage,
             publishedAt: publishedAt,
             content: obj.content
         )

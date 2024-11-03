@@ -25,7 +25,7 @@ public struct Article: Codable, Sendable, Hashable {
     public let url: URL
     
     /// The URL to a relevant image for the article.
-    public let urlToImage: URL
+    public let urlToImage: URL?
     
     /// The date and time that the article was published, in UTC (+000)
     public let publishedAt: Date
@@ -39,7 +39,7 @@ public struct Article: Codable, Sendable, Hashable {
         title: String,
         description: String?,
         url: URL,
-        urlToImage: URL,
+        urlToImage: URL?,
         publishedAt: Date,
         content: String?
     ) {
