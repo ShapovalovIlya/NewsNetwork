@@ -8,6 +8,7 @@
 import Foundation
 import NetworkManager
 import PersistenceManager
+import CoreData
 public import Models
 
 public let DefaultApiKey = "6b77ceed56dc45b8b67542940b8a3409"
@@ -20,9 +21,14 @@ public final class NewsRepository: @unchecked Sendable {
     
     private let lock = NSRecursiveLock()
     private let network = NetworkManager()
-    private let persistence = ArticlesProvider()
+    private let persistence: ArticlesProvider
     
-    private init() {}
+    private init() {
+        let desc = NSPersistentStoreDescription()
+        desc.shouldMigrateStoreAutomatically = true
+        desc.shouldInferMappingModelAutomatically = true
+        persistence = ArticlesProvider(descriptions: [desc])
+    }
     
     public func register(apiKey: String = DefaultApiKey) async {
         await network.register(key: apiKey)
