@@ -9,20 +9,6 @@ import Foundation
 import SwiftFP
 import Either
 
-/*
- {
- "status": "error",
- "code": "apiKeyMissing",
- "message": "Your API key is missing. Append this to the URL with the apiKey param, or use the x-api-key HTTP header."
- }
- 
- {
- "status": "ok",
- "totalResults": 6581,
- "articles": {}
- }
- */
-
 struct Response: Decodable {
     enum Status: String, Decodable { case ok, error }
     let status: Status
@@ -78,15 +64,15 @@ public final class NewsURLProtocol: URLProtocol, @unchecked Sendable {
                 }
             
             client.urlProtocolDidFinishLoading(self)
+            scheduledTask = nil
         }
     }
     
     //MARK: - stopLoading
     public override func stopLoading() {
         scheduledTask?.cancel()
+        scheduledTask = nil
     }
-    
-    
 }
 
 private extension NewsURLProtocol {
