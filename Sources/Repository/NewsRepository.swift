@@ -20,10 +20,15 @@ public final class NewsRepository: @unchecked Sendable {
     public static let shared = NewsRepository()
     
     private let lock = NSRecursiveLock()
-    private let network = NetworkManager()
+    private let network: NetworkManager
     private let persistence: ArticlesProvider
     
     private init() {
+        let config = URLSessionConfiguration.default
+        config.protocolClasses = [NewsURLProtocol.self]
+        let session = URLSession(configuration: config)
+        network = NetworkManager(fetcher: session.data(for:))
+        
         let desc = NSPersistentStoreDescription()
         desc.shouldMigrateStoreAutomatically = true
         desc.shouldInferMappingModelAutomatically = true
