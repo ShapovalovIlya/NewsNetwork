@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftFP
+import Either
 
 /*
  {
@@ -22,7 +23,10 @@ import SwiftFP
  }
  */
 
-enum ResponseStatus: String, Decodable { case ok, error }
+struct Response: Decodable {
+    enum Status: String, Decodable { case ok, error }
+    let status: Status
+}
 
 struct ResponseError: Decodable {
     let code: String
@@ -62,24 +66,16 @@ public final class NewsURLProtocol: URLProtocol, @unchecked Sendable {
         scheduledTask = Task { [weak self] in
             guard let self else { return }
             
-            let result = await Result { try await session.data(for: request) }
-                .tryMap { data, response in
-                    switch try decoder.decode(ResponseStatus.self, from: data) {
-                    case .ok: return (data, response)
-                    case .error:
-                        let errModel = try decoder.decode(ResponseError.self, from: data)
-                        throw errModel.urlError
-                    }
+            _ = await Result { try await session.data(for: request) }
+                .tryMap(parseResponse(decoder))
+                .either()
+                .map { success in
+                    client.urlProtocol(self, didReceive: success.1, cacheStoragePolicy: .allowedInMemoryOnly)
+                    client.urlProtocol(self, didLoad: success.0)
                 }
-            
-            switch result {
-            case .success(let success):
-                client.urlProtocol(self, didReceive: success.1, cacheStoragePolicy: .allowedInMemoryOnly)
-                client.urlProtocol(self, didLoad: success.0)
-                
-            case .failure(let failure):
-                client.urlProtocol(self, didFailWithError: failure)
-            }
+                .mapRight { error in
+                    client.urlProtocol(self, didFailWithError: error)
+                }
             
             client.urlProtocolDidFinishLoading(self)
         }
@@ -99,4 +95,16 @@ private extension NewsURLProtocol {
         static let handledMethod = "GET"
     }
 
+    func parseResponse(
+        _ decoder: JSONDecoder
+    ) -> (Data, URLResponse) throws -> (Data, URLResponse) {
+        { data, response in
+            switch try decoder.decode(Response.self, from: data).status {
+            case .ok: return (data, response)
+            case .error:
+                let errModel = try decoder.decode(ResponseError.self, from: data)
+                throw errModel.urlError
+            }
+        }
+    }
 }
