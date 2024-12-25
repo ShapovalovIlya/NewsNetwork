@@ -10,24 +10,19 @@ import SwiftFP
 import Models
 
 public actor NetworkManager {
-    public typealias NetworkTask = @Sendable (URLRequest) async throws -> (Data, URLResponse)
+    public typealias NetworkTask = @Sendable (URLRequest) async -> Result<(data: Data, response: URLResponse), Error>
     
-    private var apiKey: String?
     private let decoder: JSONDecoder
     private let fetcher: NetworkTask
     
     //MARK: - init(_:)
-    public init(fetcher: @escaping NetworkTask = URLSession.shared.data) {
+    public init(fetcher: @escaping NetworkTask) {
         self.fetcher = fetcher
         self.decoder = JSONDecoder()
         self.decoder.dateDecodingStrategy = .iso8601
     }
     
     //MARK: - Public methods
-    public func register(key: String) async {
-        self.apiKey = key
-    }
-    
     public func search(_ query: String, page: Int, size: Int) async -> Result<[Article], NewsError> {
         await perform(.search(query, page: page, size: size))
             .map(\.articles)
@@ -42,32 +37,27 @@ public actor NetworkManager {
 }
 
 private extension NetworkManager {
-    func unwrap(response: (data: Data, urlResponse: URLResponse)) throws -> Data {
-        guard let httpResponse = response.urlResponse as? HTTPURLResponse else {
-            throw NewsError.badResponse(response.urlResponse)
-        }
-        if let error = NewsError(statusCode: httpResponse.statusCode) {
-            throw error
-        }
-        return response.data
-    }
-    
-    func injectApi(key: String?) -> (Request) throws -> Request {
-        { request in
-            guard let key else { throw NewsError.apiKeyMissing }
-            return request.addHeader(key, field: "X-Api-Key")
+    func unwrapResponse(
+        data: Data,
+        response: URLResponse
+    ) -> Result<Data, Error> {
+        Result {
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NewsError.badResponse(response)
+            }
+            if let error = NewsError(statusCode: httpResponse.statusCode) {
+                throw error
+            }
+            return data
         }
     }
     
     func perform(_ endpoint: Endpoint) async -> Result<ResponseModel, NewsError> {
         await endpoint
             .reduceToUrl(NewsError.badUrl)
-            .map(Request.new)
-            .map { $0.method(.get) }
-            .tryMap(injectApi(key: apiKey))
-            .map(\.wrapped)
-            .asyncTryMap(fetcher)
-            .tryMap(unwrap(response:))
+            .map(Request.get.apply)
+            .asyncFlatMap(fetcher)
+            .flatMap(unwrapResponse)
             .decodeJSON(ResponseModel.self, decoder: decoder)
             .mapError(NewsError.map)
     }

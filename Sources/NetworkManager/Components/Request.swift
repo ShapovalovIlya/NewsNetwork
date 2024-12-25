@@ -6,25 +6,29 @@
 //
 
 import Foundation
-import Monad
+import Readers
 
-public typealias Request = Monad<URLRequest>
+public typealias Request = Reader<URL, URLRequest>
 
 extension Request {
-    @inlinable
-    static func new(_ url: URL) -> Self {
-        Request(URLRequest(url: url))
+    private func mutate(_ transform: @escaping (inout URLRequest) -> Void) -> Self {
+        map { request in
+            var request = request
+            transform(&request)
+            return request
+        }
     }
     
-    @inlinable
     func method(_ m: HTTPMethod) -> Self {
-        mutate { $0.httpMethod = m.rawValue }
+        self.httpMethod(m.rawValue)
     }
     
-    @inlinable
     func addHeader(_ value: String, field: String) -> Self {
         mutate { $0.addValue(value, forHTTPHeaderField: field) }
     }
+    
+    static func new() -> Self { Request { URLRequest(url: $0) } }
+    static var get: Self { Self.new().method(.get) }
 }
 
 extension Request {

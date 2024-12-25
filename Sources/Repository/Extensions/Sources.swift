@@ -9,6 +9,7 @@ import Foundation
 import Models
 import CoreData
 import PersistenceManager
+import Readers
 
 extension SourceEntity {
     @inlinable func copy(_ source: Source) {
@@ -23,6 +24,13 @@ extension SourceEntity {
             entity.copy(source)
             return entity
         }
+    }
+    
+    @inlinable
+    static func make(
+        from context: NSManagedObjectContext
+    ) -> Reader<Source, SourceEntity> {
+        Reader(Self.map(context))
     }
 }
 

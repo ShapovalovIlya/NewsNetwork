@@ -22,12 +22,15 @@ public final class NewsRepository: @unchecked Sendable {
     private let lock = NSRecursiveLock()
     private let network: NetworkManager
     private let persistence: ArticlesProvider
+    private let session: URLSession
+    private var apiKey: String?
     
     private init() {
         let config = URLSessionConfiguration.default
         config.protocolClasses = [NewsURLProtocol.self]
-        let session = URLSession(configuration: config)
-        network = NetworkManager(fetcher: session.data(for:))
+        config.waitsForConnectivity = true
+        session = URLSession(configuration: config)
+        network = NetworkManager(fetcher: session.result(for:))
         
         let desc = NSPersistentStoreDescription()
         desc.shouldMigrateStoreAutomatically = true
@@ -35,8 +38,11 @@ public final class NewsRepository: @unchecked Sendable {
         persistence = ArticlesProvider(descriptions: [desc])
     }
     
-    public func register(apiKey: String = DefaultApiKey) async {
-        await network.register(key: apiKey)
+    public func register(apiKey: String = DefaultApiKey) {
+        self.apiKey = apiKey
+        session.configuration.httpAdditionalHeaders = [
+            "X-Api-Key": apiKey
+        ]
     }
     
     

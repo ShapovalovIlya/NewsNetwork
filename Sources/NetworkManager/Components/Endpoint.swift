@@ -76,10 +76,6 @@ enum QueryItemBuilder {
         }
         return EmptyCollection()
     }
-    
-//    static func buildExpression(_ expression: URLQueryItem) -> some QueryCollection {
-//        CollectionOfOne(expression)
-//    }
         
     @inlinable
     static func buildFinalResult(_ component: some QueryCollection) -> [URLQueryItem] {
